@@ -8,9 +8,9 @@ main: "arsenal.ArsenalMain"
 
 description: "A mindustry mod which allow customize player's unit via using existing contents."
 
-version: 1.02
+version: 1.03
 
-minGameVersion: 147
+minGameVersion: 158
 
 hidden: true
 
