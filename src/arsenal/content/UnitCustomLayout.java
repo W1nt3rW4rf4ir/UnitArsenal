@@ -114,12 +114,14 @@ public class UnitCustomLayout extends WidgetGroup {
         zoom = 1f;
     }
 
-    public void apply(){
+   public void apply(){
         Seq<WeaponMount> mounts = new Seq<>();
         for (Weapon weapon: playerWeapons) {
             mounts.add(new WeaponMount(weapon));
         }
         player.unit().mounts = mounts.toArray(WeaponMount.class);
+
+        ArsenalVar.saveLoadout(playerUnitType, playerWeapons);
     }
 
     public boolean shouldMirror(){
