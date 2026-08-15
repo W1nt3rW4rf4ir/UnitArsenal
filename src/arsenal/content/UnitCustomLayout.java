@@ -121,7 +121,7 @@ public class UnitCustomLayout extends WidgetGroup {
         }
         player.unit().mounts = mounts.toArray(WeaponMount.class);
 
-        ArsenalVar.saveLoadout(playerUnitType, playerWeapons);
+        saveLoadout(playerUnitType, playerWeapons);
     }
 
     public boolean shouldMirror(){
