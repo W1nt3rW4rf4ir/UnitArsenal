@@ -97,13 +97,21 @@ public class ArsenalVar {
     }
 
     private static void applySavedLoadout(Unit unit){
-        Seq<Weapon> saved = loadLoadout(unit.type());
-        if (saved.isEmpty()) return;
-
-        Seq<WeaponMount> mounts = new Seq<>();
-        for (Weapon w : saved) mounts.add(new WeaponMount(w));
-        unit.mounts = mounts.toArray(WeaponMount.class);
+    // An toàn: bỏ qua nếu unit đang dùng kiểu mount tùy biến từ mod khác
+    // (vd: Extra Utilities dùng reRotMount) — ghi đè bằng WeaponMount thường
+    // sẽ làm crash code riêng của mod đó.
+    if (unit.mounts != null && unit.mounts.length > 0
+        && unit.mounts[0].getClass() != WeaponMount.class){
+        return;
     }
+
+    Seq<Weapon> saved = loadLoadout(unit.type());
+    if (saved.isEmpty()) return;
+
+    Seq<WeaponMount> mounts = new Seq<>();
+    for (Weapon w : saved) mounts.add(new WeaponMount(w));
+    unit.mounts = mounts.toArray(WeaponMount.class);
+}
 }
 
 
