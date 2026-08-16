@@ -7,7 +7,9 @@ import arc.struct.Seq;
 import arsenal.content.Hud;
 import arsenal.content.UnitCustomDialog;
 import mindustry.entities.units.WeaponMount;
+import mindustry.game.EventType;
 import mindustry.game.EventType.Trigger;
+import mindustry.gen.Groups;
 import mindustry.gen.Unit;
 import mindustry.mod.Mods;
 import mindustry.type.UnitType;
@@ -54,6 +56,19 @@ public class ArsenalVar {
                 applySavedLoadout(unit);
             }
         });
+
+        // Khi vào 1 sector/map: dọn các unit của mod khác (vd Extra Utilities)
+        // mà lỡ bị Arsenal ghi đè sai kiểu mount từ trước, tránh crash ngay khi load.
+        Events.run(EventType.WorldLoadEvent.class, () -> {
+            Groups.unit.each(unit -> {
+                if (unit.type().minfo.mod != null
+                    && unit.type().minfo.mod.name.equals("extra-utilities")
+                    && unit.mounts != null && unit.mounts.length > 0
+                    && unit.mounts[0].getClass() == WeaponMount.class){
+                    unit.kill();
+                }
+            });
+        });
     }
 
     public static void saveLoadout(UnitType type, Seq<Weapon> list){
@@ -97,21 +112,11 @@ public class ArsenalVar {
     }
 
     private static void applySavedLoadout(Unit unit){
-    // An toàn: bỏ qua nếu unit đang dùng kiểu mount tùy biến từ mod khác
-    // (vd: Extra Utilities dùng reRotMount) — ghi đè bằng WeaponMount thường
-    // sẽ làm crash code riêng của mod đó.
-    if (unit.mounts != null && unit.mounts.length > 0
-        && unit.mounts[0].getClass() != WeaponMount.class){
-        return;
+        Seq<Weapon> saved = loadLoadout(unit.type());
+        if (saved.isEmpty()) return;
+
+        Seq<WeaponMount> mounts = new Seq<>();
+        for (Weapon w : saved) mounts.add(new WeaponMount(w));
+        unit.mounts = mounts.toArray(WeaponMount.class);
     }
-
-    Seq<Weapon> saved = loadLoadout(unit.type());
-    if (saved.isEmpty()) return;
-
-    Seq<WeaponMount> mounts = new Seq<>();
-    for (Weapon w : saved) mounts.add(new WeaponMount(w));
-    unit.mounts = mounts.toArray(WeaponMount.class);
 }
-}
-
-
