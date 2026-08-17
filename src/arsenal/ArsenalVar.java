@@ -59,16 +59,7 @@ public class ArsenalVar {
 
         // Khi vào 1 sector/map: dọn các unit của mod khác (vd Extra Utilities)
         // mà lỡ bị Arsenal ghi đè sai kiểu mount từ trước, tránh crash ngay khi load.
-        Events.run(EventType.WorldLoadEvent.class, () -> {
-            Groups.unit.each(unit -> {
-                if (unit.type().minfo.mod != null
-                    && unit.type().minfo.mod.name.equals("extra-utilities")
-                    && unit.mounts != null && unit.mounts.length > 0
-                    && unit.mounts[0].getClass() == WeaponMount.class){
-                    unit.kill();
-                }
-            });
-        });
+        
     }
 
     public static void saveLoadout(UnitType type, Seq<Weapon> list){
