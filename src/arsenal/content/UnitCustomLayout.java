@@ -16,13 +16,14 @@ import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
 import arc.struct.Seq;
 import arc.util.Tmp;
+import static arsenal.ArsenalVar.saveLoadout;
+import static arsenal.ArsenalVar.unitGridDialog;
+import static mindustry.Vars.player;
+import static mindustry.Vars.tilesize;
 import mindustry.entities.units.WeaponMount;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-
-import static arsenal.ArsenalVar.*;
-import static mindustry.Vars.*;
 
 public class UnitCustomLayout extends WidgetGroup {
     public UnitType playerUnitType;
@@ -105,8 +106,6 @@ public class UnitCustomLayout extends WidgetGroup {
     public void redo(){
         if (playerWeapons.isEmpty()) return;
         playerWeapons.remove(playerWeapons.size - 1);
-        //Weapon last = playerWeapons.peek();
-        //if (last.mirror && !playerWeapons.isEmpty()) playerWeapons.peek();
     }
 
     public void reset(){
@@ -139,7 +138,6 @@ public class UnitCustomLayout extends WidgetGroup {
         if (playerUnitType != null){
             Draw.color();
             Draw.alpha(0.3f);
-
 
             TextureRegion r = playerUnitType.fullIcon;
             Draw.rect(r, unitCenterX(), unitCenterY(), scl(r.width), scl(r.height));
@@ -223,4 +221,3 @@ public class UnitCustomLayout extends WidgetGroup {
         return centerY() + panY * zoom;
     }
 }
-

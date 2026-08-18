@@ -6,11 +6,15 @@ import arc.scene.ui.Button;
 import arc.scene.ui.ButtonGroup;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.Label;
+import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Scaling;
+import static arsenal.ArsenalVar.loadedMod;
+import static arsenal.ArsenalVar.weapons;
 import mindustry.Vars;
+import static mindustry.Vars.content;
+import static mindustry.Vars.player;
 import mindustry.content.Blocks;
 import mindustry.core.Version;
 import mindustry.entities.units.WeaponMount;
@@ -25,16 +29,13 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 
-import static arsenal.ArsenalVar.*;
-import static mindustry.Vars.content;
-import static mindustry.Vars.player;
-
 public class UnitCustomDialog extends BaseDialog {
     public UnitCustomLayout unitGrid;
 
     public UnitType currentUnitType;
     public Weapon currentWeapon;
     public boolean forceMirror;
+    private String weaponSearch = "";
 
     public Table fullTable, unitSelection, weaponSelection, settingTable, gridEditTable, selectionTable;
     public ButtonGroup<Button> modSelected, unitSelected, weaponSelected;
@@ -145,7 +146,18 @@ public class UnitCustomDialog extends BaseDialog {
             cont.table(t -> t.image().color(Pal.accent).fillX().size(320, 4)).fillX().margin(4).row();
             cont.pane(p -> p.add(unitSelection).expand().fill()).minHeight(200).maxHeight(200).row();
             cont.table(t -> t.image().color(Pal.accent).fillX().size(320, 4)).fillX().margin(4).row();
-            cont.pane(p -> p.add(weaponSelection).top().expand().fill()).expand().fill().row();
+
+            cont.table(searchBar -> {
+                TextField search = new TextField();
+                search.setMessageText("Tim vu khi...");
+                search.changed(() -> {
+                    weaponSearch = search.getText();
+                    rebuildWeaponSelection();
+                });
+                searchBar.add(search).growX();
+            }).growX().pad(4).row();
+
+            cont.pane(p -> p.add(weaponSelection).top().growX()).expand().fill().row();
         }).top().expand().fill();
 
         fullTable.table(cont -> {
@@ -218,11 +230,24 @@ public class UnitCustomDialog extends BaseDialog {
         if (currentUnitType == null){
             weaponSelection.label(() -> "SELECT A UNIT...");
         }else {
+            String query = weaponSearch == null ? "" : weaponSearch.toLowerCase();
+
             for (Weapon weapon: weapons.get(currentUnitType.id)){
+                if (!query.isEmpty() && !weapon.name.toLowerCase().contains(query)) continue;
+
+                float damage = weapon.bullet != null ? weapon.bullet.damage : 0f;
+                int shots = weapon.shoot != null ? weapon.shoot.shots : 1;
+                float fireRate = weapon.reload > 0 ? 60f / weapon.reload : 0f;
+                float fireRateRounded = Math.round(fireRate * 10f) / 10f;
+                int dps = (int)(damage * shots * fireRate);
+
                 Button weaponButton = new Button();
                 weaponButton.table(t -> {
                     t.image(weapon.region).size(64, 64).scaling(Scaling.fit);
-                    t.label(() -> weapon.name + "\nMirror: " + weapon.mirror).expandX();
+                    t.label(() -> weapon.name + "\nMirror: " + weapon.mirror
+                        + "\nDmg: " + (int) damage + "  RoF: " + fireRateRounded + "/s"
+                        + "\nDPS (uoc tinh): " + dps
+                    ).left().expandX();
                 }).size(320, 0).expandX().fillX();
                 weaponButton.clicked(() -> currentWeapon = weapon);
 

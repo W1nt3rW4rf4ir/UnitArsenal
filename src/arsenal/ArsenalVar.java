@@ -4,22 +4,19 @@ import arc.Core;
 import arc.Events;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
+import static arsenal.ArsenalMain.ModNameSprite;
 import arsenal.content.Hud;
 import arsenal.content.UnitCustomDialog;
+import static mindustry.Vars.content;
+import static mindustry.Vars.mods;
+import static mindustry.Vars.player;
 import mindustry.entities.units.WeaponMount;
-import mindustry.game.EventType;
 import mindustry.game.EventType.Trigger;
-import mindustry.gen.Groups;
 import mindustry.gen.Unit;
 import mindustry.mod.Mods;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.weapons.RepairBeamWeapon;
-
-import static arsenal.ArsenalMain.ModNameSprite;
-import static mindustry.Vars.content;
-import static mindustry.Vars.mods;
-import static mindustry.Vars.player;
 
 public class ArsenalVar {
     public static final int GRID_LEN = 12;
@@ -56,9 +53,6 @@ public class ArsenalVar {
                 applySavedLoadout(unit);
             }
         });
-
-        // Khi vào 1 sector/map: dọn các unit của mod khác (vd Extra Utilities)
-        // mà lỡ bị Arsenal ghi đè sai kiểu mount từ trước, tránh crash ngay khi load.
         
     }
 
