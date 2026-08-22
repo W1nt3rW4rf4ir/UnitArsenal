@@ -10,10 +10,21 @@ import static mindustry.Vars.player;
 
 public class Hud {
     public Button arsenalButton;
-    public void init(){
+        public void init(){
         Table minimap = Vars.ui.hudGroup.find("minimap");
-        Table table = (Table) minimap.parent;
+        Table table;
 
+        if (minimap != null && minimap.parent instanceof Table){
+            // Cách cũ: gắn cạnh minimap gốc, nếu nó còn tồn tại
+            table = (Table) minimap.parent;
+        } else {
+            // Minimap gốc bị tắt/thay thế (vd bởi mod MI2) — tự tạo khung riêng
+            // nổi ở góc màn hình thay vì phụ thuộc vào minimap.
+            table = new Table();
+            table.setFillParent(true);
+            table.top().right();
+            Vars.ui.hudGroup.addChild(table);
+        }
 
         arsenalButton = new Button();
         arsenalButton.table(t -> {
@@ -25,4 +36,3 @@ public class Hud {
 
         table.row().add(arsenalButton);
     }
-}
