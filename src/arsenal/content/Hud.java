@@ -10,7 +10,8 @@ import static mindustry.Vars.player;
 
 public class Hud {
     public Button arsenalButton;
-        public void init(){
+    
+    public void init(){
         Table minimap = Vars.ui.hudGroup.find("minimap");
         Table table;
 
