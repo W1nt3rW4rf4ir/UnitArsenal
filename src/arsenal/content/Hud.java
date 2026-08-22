@@ -37,3 +37,4 @@ public class Hud {
 
         table.row().add(arsenalButton);
     }
+}
